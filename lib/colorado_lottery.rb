@@ -1,0 +1,31 @@
+class ColoradoLottery
+  attr_reader :registered_contestants,
+              :current_contestants,
+              :winners
+
+  def initialize
+    @registered_contestants = {}
+    @current_contestants = {}
+    @winners = []
+  end
+
+  def interested_and_18?(contestant, game)
+    if contestant.game_interests.include?(game.name) && (contestant.age >= 18)
+      true
+    else
+      false
+    end
+  end
+
+  def can_register?(contestant, game)
+    if self.interested_and_18?(contestant, game)
+      if !game.national_drawing
+        !contestant.out_of_state? ? true : false
+      else
+        true
+      end
+    else
+      false
+    end
+  end
+end
