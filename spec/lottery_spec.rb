@@ -35,6 +35,12 @@ RSpec.describe "Colorado Lottery" do
                      age: 18,
                      state_of_residence: 'CO',
                      spending_money: 5})
+    @grace = Contestant.new({
+                     first_name: 'Grace',
+                     last_name: 'Hopper',
+                     age: 20,
+                     state_of_residence: 'CO',
+                     spending_money: 20})
     
     @alexander.add_game_interest('Pick 4')
     @alexander.add_game_interest('Mega Millions')
@@ -42,6 +48,9 @@ RSpec.describe "Colorado Lottery" do
     @winston.add_game_interest('Cash 5')
     @winston.add_game_interest('Mega Millions')
     @benjamin.add_game_interest('Mega Millions')
+    @grace.add_game_interest('Mega Millions')
+    @grace.add_game_interest('Cash 5')
+    @grace.add_game_interest('Pick 4')
   end
 
   it "has attributes" do
@@ -80,5 +89,18 @@ RSpec.describe "Colorado Lottery" do
     expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander],
                                                    "Mega Millions"=> [@alexander, @frederick, @winston],
                                                    "Cash 5"=> [@winston]})
+
+    @lottery.register_contestant(@grace, @mega_millions)
+    @lottery.register_contestant(@grace, @cash_5)
+    @lottery.register_contestant(@grace, @pick_4)
+
+    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander, @grace],
+                                                   "Mega Millions"=> [@alexander, @frederick, @winston, @grace],
+                                                   "Cash 5"=> [@winston, @grace]})
+
+    # eligible contestants
+    expect(@lottery.eligible_contestants(@pick_4)).to eq([@alexander, @grace])
+    expect(@lottery.eligible_contestants(@cash_5)).to eq([@winston, @grace])
+    expect(@lottery.eligible_contestants(@mega_millions)).to eq([@alexander, @frederick, @grace])
   end
 end

@@ -7,6 +7,7 @@ class ColoradoLottery
     @registered_contestants = {}
     @current_contestants = {}
     @winners = []
+    @eligible_contestants = {}
   end
 
   def interested_and_18?(contestant, game)
@@ -37,5 +38,13 @@ class ColoradoLottery
         @registered_contestants[game.name] = [contestant]
       end
     end
+  end
+
+  def eligible_contestants(game)
+    good = @registered_contestants[game.name].find_all do |player|
+             player.spending_money > game.cost
+           end
+
+    @eligible_contestants[game] = good
   end
 end
