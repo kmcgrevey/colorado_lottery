@@ -129,4 +129,42 @@ RSpec.describe "Colorado Lottery" do
                @pick_4 => ["Alexander Aigades", "Grace Hopper"]}
                )
   end
+
+  it "can pick winners" do
+    players = {@cash_5 => ["Winston Churchill", "Grace Hopper"],
+               @mega_millions => ["Alexander Aigades", "Frederick Douglas", "Grace Hopper"],
+               @pick_4 => ["Alexander Aigades", "Grace Hopper"]}
+
+    allow(@lottery).to receive(:current_contestants) { players }
+
+    time_now = Time.new(2020, 10, 23, 13, 21, 00, "-06:00")
+                
+    allow(Time).to receive(:now).and_return(time_now)
+    
+    expect(@lottery.draw_winners).to eq("2020-10-23")
+    expect(@lottery.winners.class).to eq(Array)
+    expect(@lottery.winners.first.class).to eq(Hash)
+    expect(@lottery.winners.last.class).to eq(Hash)
+    expect(@lottery.winners.length).to eq(3)
+  end
+
+  it "can announce winners" do
+    stub_winners = [{"Winston Churchill"=>"Cash 5"},
+                    {"Frederick Douglas"=>"Mega Millions"},
+                    {"Grace Hopper"=>"Pick 4"}]
+    time_now = Time.new(2020, 10, 23, 13, 21, 00, "-06:00")
+
+    allow(@lottery).to receive(:winners) { stub_winners }
+    allow(@lottery).to receive(:drawing_date) {time_now}
+
+    message = "Grace Hopper won the Pick 4 on 10/23"
+    expect(@lottery.announce_winner("Pick 4")).to eq(message)
+    
+    message = "Winston Churchill won the Cash 5 on 10/23"
+    expect(@lottery.announce_winner("Cash 5")).to eq(message)
+    
+    message = "Frederick Douglas won the Mega Millions on 10/23"
+    expect(@lottery.announce_winner("Mega Millions")).to eq(message)
+  end
+
 end
