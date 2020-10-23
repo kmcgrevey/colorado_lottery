@@ -63,4 +63,22 @@ RSpec.describe "Colorado Lottery" do
     expect(@lottery.can_register?(@benjamin, @mega_millions)).to be(false)
     expect(@lottery.can_register?(@frederick, @cash_5)).to be(false)
   end
+
+  it "register contestants" do
+    @lottery.register_contestant(@alexander, @pick_4)
+    
+    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander]})
+
+    @lottery.register_contestant(@alexander, @mega_millions)
+
+    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander], "Mega Millions"=> [@alexander]})
+
+    @lottery.register_contestant(@frederick, @mega_millions)
+    @lottery.register_contestant(@winston, @cash_5)
+    @lottery.register_contestant(@winston, @mega_millions)
+
+    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander],
+                                                   "Mega Millions"=> [@alexander, @frederick, @winston],
+                                                   "Cash 5"=> [@winston]})
+  end
 end
