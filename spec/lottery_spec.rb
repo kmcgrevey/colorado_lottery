@@ -80,41 +80,55 @@ RSpec.describe "Colorado Lottery" do
 
     @lottery.register_contestant(@alexander, @mega_millions)
 
-    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander], "Mega Millions"=> [@alexander]})
+    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander],
+                                                   "Mega Millions"=> [@alexander]})
 
     @lottery.register_contestant(@frederick, @mega_millions)
     @lottery.register_contestant(@winston, @cash_5)
     @lottery.register_contestant(@winston, @mega_millions)
 
     expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander],
-                                                   "Mega Millions"=> [@alexander, @frederick, @winston],
+                                                   "Mega Millions"=> [@alexander,
+                                                                      @frederick,
+                                                                      @winston],
                                                    "Cash 5"=> [@winston]})
 
     @lottery.register_contestant(@grace, @mega_millions)
     @lottery.register_contestant(@grace, @cash_5)
     @lottery.register_contestant(@grace, @pick_4)
 
-    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander, @grace],
-                                                   "Mega Millions"=> [@alexander, @frederick, @winston, @grace],
-                                                   "Cash 5"=> [@winston, @grace]})
+    expect(@lottery.registered_contestants).to eq({"Pick 4"=> [@alexander,
+                                                               @grace],
+                                                   "Mega Millions"=> [@alexander,
+                                                                      @frederick,
+                                                                      @winston,
+                                                                      @grace],
+                                                   "Cash 5"=> [@winston,
+                                                               @grace]})
 
     # eligible contestants
     expect(@lottery.eligible_contestants(@pick_4)).to eq([@alexander, @grace])
     expect(@lottery.eligible_contestants(@cash_5)).to eq([@winston, @grace])
-    expect(@lottery.eligible_contestants(@mega_millions)).to eq([@alexander, @frederick, @grace])
+    expect(@lottery.eligible_contestants(@mega_millions)).to eq([@alexander,
+                                                                 @frederick,
+                                                                 @grace])
 
     # charge contestant adds them to current contestant list and docks funds
     @lottery.charge_contestants(@cash_5)
     
-    expect(@lottery.current_contestants).to eq({@cash_5 => ["Winston Churchill", "Grace Hopper"]})
+    expect(@lottery.current_contestants).to eq({@cash_5 => ["Winston Churchill",
+                                                            "Grace Hopper"]})
     expect(@grace.spending_money).to eq(19)
     expect(@winston.spending_money).to eq(4)
 
     @lottery.charge_contestants(@mega_millions)
 
     expect(@lottery.current_contestants).to eq(
-              {@cash_5 => ["Winston Churchill", "Grace Hopper"],
-               @mega_millions => ["Alexander Aigades", "Frederick Douglas", "Grace Hopper"]}
+              {@cash_5 => ["Winston Churchill",
+                           "Grace Hopper"],
+               @mega_millions => ["Alexander Aigades",
+                                  "Frederick Douglas",
+                                  "Grace Hopper"]}
                )
     expect(@grace.spending_money).to eq(14)
     expect(@winston.spending_money).to eq(4)
@@ -124,16 +138,24 @@ RSpec.describe "Colorado Lottery" do
     @lottery.charge_contestants(@pick_4)
 
     expect(@lottery.current_contestants).to eq(
-              {@cash_5 => ["Winston Churchill", "Grace Hopper"],
-               @mega_millions => ["Alexander Aigades", "Frederick Douglas", "Grace Hopper"],
-               @pick_4 => ["Alexander Aigades", "Grace Hopper"]}
+              {@cash_5 => ["Winston Churchill",
+                           "Grace Hopper"],
+               @mega_millions => ["Alexander Aigades",
+                                  "Frederick Douglas",
+                                  "Grace Hopper"],
+               @pick_4 => ["Alexander Aigades",
+                           "Grace Hopper"]}
                )
   end
 
   it "can pick winners" do
-    players = {@cash_5 => ["Winston Churchill", "Grace Hopper"],
-               @mega_millions => ["Alexander Aigades", "Frederick Douglas", "Grace Hopper"],
-               @pick_4 => ["Alexander Aigades", "Grace Hopper"]}
+    players = {@cash_5 => ["Winston Churchill",
+                           "Grace Hopper"],
+               @mega_millions => ["Alexander Aigades",
+                                  "Frederick Douglas",
+                                  "Grace Hopper"],
+               @pick_4 => ["Alexander Aigades",
+                           "Grace Hopper"]}
 
     allow(@lottery).to receive(:current_contestants) { players }
 
@@ -166,5 +188,4 @@ RSpec.describe "Colorado Lottery" do
     message = "Frederick Douglas won the Mega Millions on 10/23"
     expect(@lottery.announce_winner("Mega Millions")).to eq(message)
   end
-
 end
