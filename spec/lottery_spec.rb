@@ -102,5 +102,31 @@ RSpec.describe "Colorado Lottery" do
     expect(@lottery.eligible_contestants(@pick_4)).to eq([@alexander, @grace])
     expect(@lottery.eligible_contestants(@cash_5)).to eq([@winston, @grace])
     expect(@lottery.eligible_contestants(@mega_millions)).to eq([@alexander, @frederick, @grace])
+
+    # charge contestant adds them to current contestant list and docks funds
+    @lottery.charge_contestants(@cash_5)
+    
+    expect(@lottery.current_contestants).to eq({@cash_5 => ["Winston Churchill", "Grace Hopper"]})
+    expect(@grace.spending_money).to eq(19)
+    expect(@winston.spending_money).to eq(4)
+
+    @lottery.charge_contestants(@mega_millions)
+
+    expect(@lottery.current_contestants).to eq(
+              {@cash_5 => ["Winston Churchill", "Grace Hopper"],
+               @mega_millions => ["Alexander Aigades", "Frederick Douglas", "Grace Hopper"]}
+               )
+    expect(@grace.spending_money).to eq(14)
+    expect(@winston.spending_money).to eq(4)
+    expect(@alexander.spending_money).to eq(5)
+    expect(@frederick.spending_money).to eq(15)
+
+    @lottery.charge_contestants(@pick_4)
+
+    expect(@lottery.current_contestants).to eq(
+              {@cash_5 => ["Winston Churchill", "Grace Hopper"],
+               @mega_millions => ["Alexander Aigades", "Frederick Douglas", "Grace Hopper"],
+               @pick_4 => ["Alexander Aigades", "Grace Hopper"]}
+               )
   end
 end

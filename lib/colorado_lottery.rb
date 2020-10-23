@@ -47,4 +47,13 @@ class ColoradoLottery
 
     @eligible_contestants[game] = good
   end
+
+  def charge_contestants(game)
+    players = []
+    @eligible_contestants[game].each do |player|
+      player.spending_money -= game.cost
+      players << player.full_name
+    end
+    @current_contestants[game] = players
+  end
 end
